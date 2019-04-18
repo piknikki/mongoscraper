@@ -1,4 +1,4 @@
-# mongoscraper
+# MongoScraper
 
 # Overview
 This web app lets users view and leave comments on the latest news articles which are scraped from reputable sources.
