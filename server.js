@@ -1,67 +1,36 @@
-// Dependencies
 var express = require("express");
-var mongojs = require("mongojs");
-// Require axios and cheerio. This makes the scraping possible
-var axios = require("axios");
-var cheerio = require("cheerio");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+
+
+var PORT = 3002;
 
 // Initialize Express
 var app = express();
 
-// Database configuration
-var databaseUrl = "mongoscraperDB";
-var collections = ["scrapedData"];
+// Configure middleware
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static("public"));
 
-db.on("error", function(error) {
-    console.log("Database Error:", error);
+// app.engine("handlebars", ehbrs({ defaultLayout: "main" }));
+// app.set("view engine", "handlebars");
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoscraper";
+
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true
 });
 
-// Main route (simple Hello World Message)
-app.get("/", function(req, res) {
-    res.send("Hello world");
-});
-
-// TODO: make two more routes
-
-
-// get info from db
-app.get("/all", function(req, res) {
-    db.scrapedData.find({}, function(error, found) {
-        if (error) {
-            console.log(error)
-        } else {
-            res.json(found)
-        }
-    })
-});
-
-app.get("/scrape", function(req, res) {
-    axios.get("https://www.nytimes.com").then(function(response) {
-        var $ = cheerio.load(response.data); // hand over to cheerio
-
-        // jquery/cheerio selector and then loop through the items in the result
-        $("article").each(function(item, element) {
-            var title = $(element).children().text();
-            var link = $(element).find("a").attr("href");
-
-
-            db.scrapedData.insert({
-                title,
-                link
-            });
-        });
-        res.send("scrape initiated");
-    });
-})
-
-
-
+require("./routes/routes.js")(app);
 
 
 // Listen on port 3000
-app.listen(3000, function() {
-    console.log("App running on port 3000!");
+app.listen(PORT, function() {
+    console.log("App running on port 3002!");
 });

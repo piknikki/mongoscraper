@@ -1,0 +1,15 @@
+
+#article {
+    display: inline-block;
+    overflow: auto;
+    width: 89%;
+    height: 700px;
+}
+#note {
+    float: right;
+    width: 9%;
+}
+
+.row {
+    margin: 20px;
+}
