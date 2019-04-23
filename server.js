@@ -31,6 +31,6 @@ require("./routes/routes.js")(app);
 
 
 // Listen on port 3000
-app.listen(PORT, function() {
+app.listen(process.env.PORT || 3000, function() {
     console.log("App running on port 3002!");
 });
