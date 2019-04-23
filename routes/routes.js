@@ -30,6 +30,17 @@ module.exports = function(app) {
         });
     });
 
+    app.get("/", function(req, res) {
+        db.Article.find({})
+            .then(function(found) {
+                // let articleObj = {article: found};
+                // res.render("index", articleObj);
+                res.json(found)
+            })
+            .catch(function(err) {
+                res.json(err);
+            });
+    });
 
     // route for getting all Articles from the db
     // put the articles into the index handlebars partial
